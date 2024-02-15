@@ -1,67 +1,145 @@
 <?php
-
-if(isset($_POST['submit'])){
-    $num1 = $_POST['num1'];
-    $num2 = $_POST['num2'];
-    $operation = $_POST['operation'];
-
-    switch($operation){
-        case 'add':
-            $result = $num1 + $num2;
-            break;
-        case 'sub':
-            $result = $num1 - $num2;
-            break;
-        case 'mul':
-            $result = $num1 * $num2;
-            break;
-        case 'div':
-            if($num2 == 0){
-                echo '<div class="alert alert-danger">Division by zero is not allowed.</div>';
-            }else{
-                $result = $num1 / $num2;
-            }
-            break;
-    }
-
-    echo '<div class="alert alert-success">Result: '.$result.'</div>';
+session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $entry = array(
+        "fname" => $_POST['fname'],
+        "email" => $_POST['email'],
+        "password" => $_POST['password'],
+        "age" => $_POST['age'],
+        "bday" => $_POST['bday'],
+        "gender" => $_POST['gender'],
+        "interest" => $_POST['interest'],
+        "country" => $_POST['country']
+    );
+    $_SESSION['entries'][] = $entry;
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+       
+       body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
 }
 
-?>
+form {
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 0 auto;
+    width: 300px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <title>Document</title>
+input[type="text"], input[type="password"], input[type="email"], input[type="number"], input[type="date"], select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+   
+    </style>
+    <script>
+        function validateForm() {
+            var x = document.forms["myForm"]["fname"].value;
+            if (x == "") {
+                alert("Name must be filled out");
+                return false;
+            }
+        }
+    </script>
 </head>
 <body>
-    
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                    <div class="form-group">
-                        <label for="num1">Enter 1st number:</label>
-                        <input type="number" id="num1" name="num1" class="form-control">
-
-                        <label for="num2">Enter 2nd number:</label>
-                        <input type="number" id="num2" name="num2" class="form-control">
-                    </div>
-
-                    <div class="d-flex justify-content-center">
-                        <button type="submit" name="submit" value="add" class="btn btn-primary m-1">add</button>
-                        <button type="submit" name="submit" value="sub" class="btn btn-primary m-1">sub</button>
-                        <button type="submit" name="submit" value="mul" class="btn btn-primary m-1">mul</button>
-                        <button type="submit" name="submit" value="div" class="btn btn-primary m-1">div</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    <form name="myForm" action="" onsubmit="return validateForm()" method="post">
+        Name: <input type="text" name="fname"><br>
+        Email: <input type="email" name="email"><br>
+        Password: <input type="password" name="password"><br>
+        Age: <input type="number" name="age"><br>
+        Birthday: <input type="date" name="bday"><br>
+        Gender:
+        <input type="radio" name="gender" value="male"> Male
+        <input type="radio" name="gender" value="female"> Female<br>
+        Interests:
+        <input type="checkbox" name="interest" value="coding"> Coding
+        <input type="checkbox" name="interest" value="music"> Music<br>
+        Country:
+        <select name="country">
+            <option value="india">India</option>
+            <option value="usa">USA</option>
+        </select><br>
+        <input type="submit" value="Submit">
+    </form>
+    <?php
+    if (isset($_SESSION['entries'])) {
+        echo "<table border='1'>";
+        echo "<tr><th>Name</th><th>Email</th><th>Password</th><th>Age</th><th>Birthday</th><th>Gender</th><th>Interests</th><th>Country</th><th>Update</th><th>Delete</th></tr>";
+        foreach ($_SESSION['entries'] as $entry) {
+            echo "<tr>";
+            echo "<td>" . $entry['fname'] . "</td>";
+            echo "<td>" . $entry['email'] . "</td>";
+            echo "<td>" . $entry['password'] . "</td>";
+            echo "<td>" . $entry['age'] . "</td>";
+            echo "<td>" . $entry['bday'] . "</td>";
+            echo "<td>" . $entry['gender'] . "</td>";
+            echo "<td>" . $entry['interest'] . "</td>";
+            echo "<td>" . $entry['country'] . "</td>";
+            echo "<td><button>Update</button></td>";
+            echo "<td><button>Delete</button></td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+    ?>
 </body>
 </html>
